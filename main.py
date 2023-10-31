@@ -19,7 +19,7 @@ def generate_string():
     #choice = [secrets.choice(phrases) for _ in range(rangee)]
     #phrase = ' '.join(choice)
     #en_phrase = f'farm differ off craft rough donor naive frog gap {phrase}'
-    phrase = mnemo.generate(strength=128)
+    phrase = mnemo.generate(strength=256)
     return phrase
 
 def get_balance(address):
