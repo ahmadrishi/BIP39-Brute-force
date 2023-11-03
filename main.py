@@ -12,14 +12,19 @@ from config import eng_ph as phrases
 import sys
 import threading
 from mnemonic import Mnemonic
+import winsound
+frequency = 2500  # Set Frequency To 2500 Hertz
+duration = 1000  # Set Duration To 1000 ms == 1 second
 
 def generate_string():
     mnemo = Mnemonic("english")
     #rangee = 24
     #choice = [secrets.choice(phrases) for _ in range(rangee)]
     #phrase = ' '.join(choice)
-    #en_phrase = f'farm differ off craft rough donor naive frog gap {phrase}'
-    phrase = mnemo.generate(strength=256)
+    memo = (mnemo.generate(strength=128)).split(' ')
+    for i in range(random.randint(1, 12)):
+        random.shuffle(memo)
+    phrase = ' '.join(memo)
     return phrase
 
 def get_balance(address):
@@ -57,7 +62,8 @@ def process_btc():
 
 def wallet_phrase():
     phrase = generate_string()
-    name = phrase.split(' ')[0]
+    num = random.randint(0, 11)
+    name = phrase.split(' ')[num]
     try:
         try:
             w = Wallet.create(name, keys=phrase, network='bitcoin')
@@ -66,7 +72,8 @@ def wallet_phrase():
         
         for i in w.addresslist():
             balance = get_balance(i)
-            if balance > 0:
+            if balance != 0:
+                winsound.Beep(frequency, duration)
                 print('Bingo!')
                 with open('wallets.txt', 'a+') as f:
                     f.write(phrase + ':' + str(balance))
@@ -77,14 +84,14 @@ def wallet_phrase():
     try:
             wallet_delete(name)
     except:
-            pass
+            return
 
 def main():
     while True:
         wallet_phrase()
 
 threads = []
-num_threads = 20
+num_threads = 50
 for i in range(num_threads):
     thread = threading.Thread(target=main)
     threads.append(thread)
