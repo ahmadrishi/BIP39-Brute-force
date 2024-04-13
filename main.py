@@ -1,4 +1,4 @@
-from btc.bitcoin import BitCoin
+#from btc.bitcoin import BitCoin
 from bitcoinlib.wallets import Wallet, wallet_delete
 import requests
 import json
@@ -11,20 +11,22 @@ import secrets
 from config import eng_ph as phrases
 import sys
 import threading
+import os
 from mnemonic import Mnemonic
 import winsound
 frequency = 2500  # Set Frequency To 2500 Hertz
 duration = 1000  # Set Duration To 1000 ms == 1 second
+
+#counter_lock = threading.Lock()
+#counter = 1
 
 def generate_string():
     mnemo = Mnemonic("english")
     #rangee = 24
     #choice = [secrets.choice(phrases) for _ in range(rangee)]
     #phrase = ' '.join(choice)
-    memo = (mnemo.generate(strength=128)).split(' ')
-    for i in range(random.randint(1, 12)):
-        random.shuffle(memo)
-    phrase = ' '.join(memo)
+    memo = mnemo.generate(strength=128)
+    phrase = memo
     return phrase
 
 def get_balance(address):
@@ -42,28 +44,9 @@ def gen_key(hex):
 
     return privKey.to_wif(), myAddress
 
-def process_btc():
-    s = secrets.token_hex(32)
-    e = secrets.token_hex(32)
-    start_phrase = int(s, 16) + 1
-    end_phrase = int(e, 16)
-    for deci in range(start_phrase, end_phrase + 1, 1):
-        hex = format(deci, 'X')
-        pri, add = gen_key(hex)
-        balance = get_balance(add)
-        try:
-            if balance > 0:
-                run = False
-                print("Private Key: ", pri)
-                print("Address: ", add)
-                print("Balance: ", balance)
-        except:
-            pass
-
 def wallet_phrase():
     phrase = generate_string()
-    num = random.randint(0, 11)
-    name = phrase.split(' ')[num]
+    name = str(random.randint(1, 1515151651651651)) 
     try:
         try:
             w = Wallet.create(name, keys=phrase, network='bitcoin')
@@ -75,7 +58,7 @@ def wallet_phrase():
             if balance != 0:
                 winsound.Beep(frequency, duration)
                 print('Bingo!')
-                with open('wallets.txt', 'a+') as f:
+                with open('./wallets.txt', 'a+') as f:
                     f.write(phrase + ':' + str(balance))
                     f.write('\n')
     except Exception as e:
@@ -86,18 +69,27 @@ def wallet_phrase():
     except:
             return
 
-def main():
+def worker():
     while True:
         wallet_phrase()
 
-threads = []
-num_threads = 50
-for i in range(num_threads):
-    thread = threading.Thread(target=main)
-    threads.append(thread)
-    thread.start()
+def main():
+    counter = 1
 
-# Wait for all threads to finish
-for thread in threads:
-    thread.join()
+    # Create and start 50 threads
+    threads = [threading.Thread(target=worker) for _ in range(500)]
+    for thread in threads:
+        thread.start()
 
+    try:
+        while True:
+            os.system("cls")
+            print(counter)
+            counter += 1
+            #sleep(1)
+    except KeyboardInterrupt:
+        # Wait for all threads to finish before exiting
+        for thread in threads:
+            thread.join()
+
+main()
