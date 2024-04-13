@@ -83,7 +83,7 @@ def main():
 
     try:
         while True:
-            os.system("cls")
+            os.system("clear")
             print(counter)
             counter += 1
             #sleep(1)
