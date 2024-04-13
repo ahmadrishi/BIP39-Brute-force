@@ -24,18 +24,18 @@ def get_balance(address):
 
 def wallet_phrase():
     phrase = generate_string()
-    name = str(random.randint(1, 1515151651651651)) 
+    name = 'wallet-' + str(random.randint(1, 1515151651651651)) 
     try:
         w = Wallet.create(name, keys=phrase, network='bitcoin')
         for addr in w.addresslist():
             balance = get_balance(addr)
+            print(f'{addr}:{phrase}:{balance}')
             if balance != 0:
-                print(f'{addr}:{phrase}:{balance}')
                 with open('./wallets.txt', 'a+') as f:
                     f.write(f'{addr}:{phrase}:{balance}\n')
         wallet_delete(name)
     except Exception as e:
-        print("Error processing wallet")
+        print("Error processing wallet: " + str(e))
 
 def worker():
     while True:
