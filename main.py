@@ -3,30 +3,14 @@ from bitcoinlib.wallets import Wallet, wallet_delete
 import requests
 import json
 from blockcypher import get_wallet_balance
-from time import sleep
-from bit import Key
-import hashlib
 import random
 import secrets
-from config import eng_ph as phrases
-import sys
-import threading
-import os
 from mnemonic import Mnemonic
-# import winsound
-# frequency = 2500  # Set Frequency To 2500 Hertz
-# duration = 1000  # Set Duration To 1000 ms == 1 second
-
-#counter_lock = threading.Lock()
-#counter = 1
+import threading
 
 def generate_string():
     mnemo = Mnemonic("english")
-    #rangee = 24
-    #choice = [secrets.choice(phrases) for _ in range(rangee)]
-    #phrase = ' '.join(choice)
-    memo = mnemo.generate(strength=128)
-    phrase = memo
+    phrase = mnemo.generate(strength=128)
     return phrase
 
 def get_balance(address):
@@ -38,58 +22,34 @@ def get_balance(address):
         return
     return balance
 
-def gen_key(hex):
-    privKey= Key.from_hex(hex)
-    myAddress = privKey.address
-
-    return privKey.to_wif(), myAddress
-
 def wallet_phrase():
     phrase = generate_string()
     name = str(random.randint(1, 1515151651651651)) 
     try:
-        try:
-            w = Wallet.create(name, keys=phrase, network='bitcoin')
-        except Exception as e:
-            return
-        
-        for i in w.addresslist():
-            balance = get_balance(i)
+        w = Wallet.create(name, keys=phrase, network='bitcoin')
+        for addr in w.addresslist():
+            balance = get_balance(addr)
             if balance != 0:
-                #winsound.Beep(frequency, duration)
-                print('Bingo!')
+                print(f'{addr}:{phrase}:{balance}')
                 with open('./wallets.txt', 'a+') as f:
-                    f.write(phrase + ':' + str(balance))
-                    f.write('\n')
+                    f.write(f'{addr}:{phrase}:{balance}\n')
+        wallet_delete(name)
     except Exception as e:
-        print(10 * '-')
-    
-    try:
-            wallet_delete(name)
-    except:
-            return
+        print("Error processing wallet")
 
 def worker():
     while True:
         wallet_phrase()
 
 def main():
-    counter = 1
-
-    # Create and start 50 threads
     threads = [threading.Thread(target=worker) for _ in range(500)]
     for thread in threads:
         thread.start()
 
     try:
-        while True:
-            os.system("clear")
-            print(counter)
-            counter += 1
-            #sleep(1)
-    except KeyboardInterrupt:
-        # Wait for all threads to finish before exiting
         for thread in threads:
             thread.join()
+    except KeyboardInterrupt:
+        print("Interrupted by user")
 
 main()

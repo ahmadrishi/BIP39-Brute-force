@@ -162,3 +162,5 @@ cython_debug/
 #Custom
 __pycache__
 *.ipynb
+old.py
+gpu*.py
