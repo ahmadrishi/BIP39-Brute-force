@@ -13,9 +13,9 @@ import sys
 import threading
 import os
 from mnemonic import Mnemonic
-import winsound
-frequency = 2500  # Set Frequency To 2500 Hertz
-duration = 1000  # Set Duration To 1000 ms == 1 second
+# import winsound
+# frequency = 2500  # Set Frequency To 2500 Hertz
+# duration = 1000  # Set Duration To 1000 ms == 1 second
 
 #counter_lock = threading.Lock()
 #counter = 1
@@ -56,7 +56,7 @@ def wallet_phrase():
         for i in w.addresslist():
             balance = get_balance(i)
             if balance != 0:
-                winsound.Beep(frequency, duration)
+                #winsound.Beep(frequency, duration)
                 print('Bingo!')
                 with open('./wallets.txt', 'a+') as f:
                     f.write(phrase + ':' + str(balance))
