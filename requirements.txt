@@ -1,0 +1,5 @@
+bit==0.8.0
+bitcoinlib==0.6.13
+blockcypher==1.0.93
+mnemonic==0.20
+Requests==2.31.0
