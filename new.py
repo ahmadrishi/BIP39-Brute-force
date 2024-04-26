@@ -23,7 +23,7 @@ run = True
 
 while run:
     phrase = generate_string()
-    
+    print(phrase)
     try:
         try:
             wallet_delete('nice')
