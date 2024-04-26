@@ -32,6 +32,7 @@ while run:
             balance_url = f'https://mempool.space/api/address/{i}/txs/chain'
             res = requests.get(balance_url).content
             data = len(json.loads(res))
+            print(data)
             if data > 0:
                 print(phrase)
     except Exception as e:
