@@ -2,16 +2,18 @@
 import secrets
 import requests
 import json
+from mnemonic import Mnemonic
 # from btc.bitcoin import BitCoin
 from bitcoinlib.wallets import Wallet, wallet_delete
 
 # bitcoin = BitCoin(BitCoin.HttpProvider(endpoint_uri='https://morning-special-meme.btc.discover.quiknode.pro/f1169d5a23f874230f4e4e80ffcf664ceb0b118e/', rpcuser='', rpcpassword=''))
 # w3 = Web3(Web3.HTTPProvider('https://long-weathered-diamond.discover.quiknode.pro/ec5803112411ec3bd8e6641bac1427ecfdd13da8/'))
-#mn = Mnemonic(language='english')
+mn = Mnemonic(language='english')
 def generate_string():
-    rangee = 12
-    choice = secrets.token_bytes(rangee)
-    phrase = str(choice)
+    # rangee = 12
+    # choice = secrets.token_bytes(rangee)
+    # phrase = str(choice)
+    phrase = mn.generate(strength=128)
     return phrase
 
 # w3.eth.account.enable_unaudited_hdwallet_features()
