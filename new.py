@@ -36,6 +36,7 @@ while run:
             if data > 0:
                 print(phrase)
     except Exception as e:
+        print(str(e))
         pass
     
     # balance = 0
